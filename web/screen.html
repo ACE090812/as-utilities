@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #11151a; --bg2: #171c22; --panel: #1c232b; --line: #2a333d; --text: #e8edf2; --muted: #8995a3;
+    --amber: #f2a900; --amberDim: #5a4410; --blue: #3e8ed0; --red: #e5484d; --green: #30a46c; --ok: #3ecf8e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 800px; overflow: hidden; background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1280px; height: 800px;
+    background: radial-gradient(1200px 500px at 70% -10%, #1a222b 0%, var(--bg) 60%); }
+  /* header */
+  .hdr { position: absolute; left: 0; top: 0; width: 1280px; height: 96px; display: flex; align-items: center;
+    padding: 0 40px; border-bottom: 2px solid var(--line); background: linear-gradient(#161c22, #12171c); }
+  .logo { width: 52px; height: 52px; border-radius: 12px; background: var(--amber); display: grid; place-items: center; margin-right: 18px; }
+  .logo svg { width: 30px; height: 30px; }
+  .ttl { font-size: 26px; font-weight: 800; letter-spacing: .5px; }
+  .sub { font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 2px; }
+  .hdr .sp { flex: 1; }
+  .badge { font-size: 15px; font-weight: 800; letter-spacing: 2px; padding: 8px 16px; border-radius: 8px; margin-right: 20px; }
+  .badge.amber { background: var(--amberDim); color: var(--amber); }
+  .badge.blue { background: #173049; color: #7cc0ff; }
+  .clock { font-family: Consolas, 'Courier New', monospace; font-size: 24px; color: var(--muted); }
+  /* widgets */
+  .w { position: absolute; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  .panel > .pt { position: absolute; left: 24px; top: 16px; font-size: 14px; font-weight: 800; letter-spacing: 2.5px; color: var(--muted); }
+  .text { line-height: 1.25; white-space: pre-wrap; }
+  .c-muted { color: var(--muted); } .c-ok { color: var(--ok); } .c-error { color: var(--red); } .c-amber { color: var(--amber); }
+  .mono { font-family: Consolas, 'Courier New', monospace; }
+  .btn { display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 10px; font-weight: 700;
+    font-size: 22px; border: 2px solid transparent; transition: background .08s, transform .08s; padding: 0 12px; }
+  .btn.primary { background: var(--amber); color: #1a1300; }
+  .btn.primary.hover { background: #ffc233; }
+  .btn.danger { background: var(--red); color: #fff; }
+  .btn.danger.hover { background: #f06368; }
+  .btn.ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn.ghost.hover { border-color: var(--muted); }
+  .btn.step { background: var(--bg2); border-color: var(--line); color: var(--text); font-size: 21px; }
+  .btn.step.hover { border-color: var(--amber); }
+  .btn.done { background: #133226; border-color: #1f5c43; color: var(--ok); }
+  .btn.key { background: var(--bg2); border-color: var(--line); color: var(--text); font-size: 32px; font-family: Consolas, monospace; }
+  .btn.key.hover { border-color: var(--amber); }
+  .btn.small { font-size: 14px; color: var(--muted); }
+  .btn.disabled:not(.done) { opacity: .45; }
+  .btn .bdg { position: absolute; top: 8px; left: 10px; font-size: 14px; opacity: .8; }
+  .btn.simon { opacity: .35; border-radius: 16px; }
+  .btn.simon.lit, .btn.simon.hover:not(.disabled) { opacity: 1; box-shadow: 0 0 40px currentColor; }
+  .display { background: #0b1a10; border: 2px solid #22382a; border-radius: 10px; display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 24px; position: absolute; overflow: hidden; }
+  .display .dg { font-family: Consolas, 'Courier New', monospace; font-size: 96px; font-weight: 700; letter-spacing: 10px; color: #7dffa8;
+    text-shadow: 0 0 18px rgba(125,255,168,.45); position: relative; }
+  .display .ghost { position: absolute; right: 24px; color: rgba(125,255,168,.07); text-shadow: none; }
+  .display .unit { position: absolute; left: 16px; bottom: 10px; font-size: 16px; color: #3f7a53; font-weight: 700; letter-spacing: 2px; }
+  .display.dead { background: #0a0d0b; border-color: #1d2420; }
+  .display .frz { position: absolute; left: 16px; top: 10px; font-size: 13px; letter-spacing: 2px; color: var(--amber); font-weight: 800; }
+  .led { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 800; letter-spacing: 2px; }
+  .led i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+  .led.green i { background: var(--green); box-shadow: 0 0 12px var(--green); }
+  .led.amber i { background: var(--amber); box-shadow: 0 0 12px var(--amber); }
+  .led.red i { background: var(--red); box-shadow: 0 0 14px var(--red); animation: blink .6s infinite; }
+  .led.blue i { background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+  @keyframes blink { 50% { opacity: .2; } }
+  .entry { background: #0e1216; border: 2px solid var(--line); border-radius: 10px; font-family: Consolas, monospace; font-size: 60px;
+    letter-spacing: 12px; display: flex; align-items: center; padding: 0 22px; color: var(--text); }
+  .entry .ph { color: #36404b; }
+  .progress { background: #0e1216; border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+  .progress > div { height: 100%; background: var(--amber); }
+  .gauge { background: #0e1216; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .gauge .zone { position: absolute; top: 0; bottom: 0; background: rgba(48,164,108,.35); border-left: 2px solid var(--green); border-right: 2px solid var(--green); }
+  .gauge .needle { position: absolute; top: -4px; bottom: -4px; width: 6px; margin-left: -3px; background: var(--amber); box-shadow: 0 0 14px var(--amber); }
+  .gauge .tick { position: absolute; bottom: 0; width: 2px; height: 16px; background: #2d3742; }
+  .terminal { border-radius: 12px; border: 3px solid var(--line); background: var(--bg2); display: grid; place-items: center; }
+  .terminal i { width: 40px; height: 40px; border-radius: 50%; display: block; }
+  .terminal.selected { border-color: #fff; box-shadow: 0 0 22px rgba(255,255,255,.35); }
+  .terminal.hover { border-color: var(--muted); }
+  .terminal.done { opacity: .6; }
+  .hotspot { border-radius: 50%; border: 2px dashed rgba(242,169,0,.0); display: grid; place-items: center; font-size: 30px; color: rgba(242,169,0,.25); font-weight: 800; }
+  .hotspot.hover { border-color: var(--amber); color: var(--amber); }
+  .hotspot.found { border: 2px solid var(--ok); color: var(--ok); }
+  .row { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; border-left-width: 6px; }
+  .row.a-red { border-left-color: var(--red); } .row.a-amber { border-left-color: var(--amber); }
+  .row.a-blue { border-left-color: var(--blue); } .row.a-muted { border-left-color: #3b4652; }
+  .row.prio { background: #221a14; }
+  svg.lines { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; pointer-events: none; z-index: 1; }
+  .terminal { z-index: 2; }
+  .toast { z-index: 5; }
+  .toast { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); padding: 14px 28px; border-radius: 10px;
+    font-size: 22px; font-weight: 700; background: #26303a; border: 1px solid var(--line); }
+  .toast.error { background: #3a1517; border-color: var(--red); color: #ffb3b5; }
+  .toast.ok { background: #12301f; border-color: var(--green); color: #a6f3c8; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const root = document.getElementById('root');
+const LOGO = '<svg viewBox="0 0 24 24"><path fill="#1a1300" d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pos = w => `left:${w.x}px;top:${w.y}px;` + (w.w ? `width:${w.w}px;` : '') + (w.h ? `height:${w.h}px;` : '');
+
+function widget(w, hover) {
+  const hv = w.id && w.id === hover && !w.disabled ? ' hover' : '';
+  switch (w.type) {
+    case 'panel':
+      return `<div class="w panel" style="${pos(w)}">${w.title ? `<div class="pt">${esc(w.title)}</div>` : ''}</div>`;
+    case 'text': {
+      const cls = ['w', 'text', w.color ? 'c-' + w.color : '', w.mono ? 'mono' : ''].join(' ');
+      return `<div class="${cls}" style="${pos(w)}font-size:${w.size || 22}px;font-weight:${w.weight || 500};text-align:${w.align || 'left'}">${esc(w.text)}</div>`;
+    }
+    case 'button': case 'key': {
+      const style = w.style || 'primary';
+      const cls = ['w btn', style, hv, w.disabled ? 'disabled' : '', w.lit ? 'lit' : '', w.small ? 'small' : ''].join(' ');
+      const col = w.color ? `background:${w.color};color:${w.color};` : '';
+      return `<div class="${cls}" style="${pos(w)}${col}">${w.badge ? `<span class="bdg">${esc(w.badge)}</span>` : ''}${esc(w.label)}</div>`;
+    }
+    case 'display': {
+      const v = w.dead ? '' : esc(w.value);
+      return `<div class="display${w.dead ? ' dead' : ''}" style="${pos(w)}">
+        ${w.frozen ? '<span class="frz">NO MOVEMENT</span>' : ''}
+        <span class="dg ghost">88888</span><span class="dg">${v}</span><span class="unit">${esc(w.unit)}</span></div>`;
+    }
+    case 'led':
+      return `<div class="w led ${w.color}" style="${pos(w)}"><i></i>${esc(w.label)}</div>`;
+    case 'entry': {
+      const val = w.value ? esc(w.value) : `<span class="ph">${esc(w.placeholder)}</span>`;
+      return `<div class="w entry" style="${pos(w)}">${val}</div>`;
+    }
+    case 'progress':
+      return `<div class="w progress" style="${pos(w)}"><div style="width:${Math.max(0, Math.min(1, w.value)) * 100}%"></div></div>`;
+    case 'gauge': {
+      let ticks = '';
+      for (let i = 1; i < 20; i++) ticks += `<span class="tick" style="left:${i * 5}%"></span>`;
+      return `<div class="w gauge" style="${pos(w)}">${ticks}
+        <div class="zone" style="left:${w.zone[0] * 100}%;width:${(w.zone[1] - w.zone[0]) * 100}%"></div>
+        <div class="needle" style="left:${w.value * 100}%"></div></div>`;
+    }
+    case 'terminal': {
+      const cls = ['w terminal', hv, w.selected ? 'selected' : '', w.done ? 'done' : ''].join(' ');
+      return `<div class="${cls}" style="${pos(w)}"><i style="background:${w.color};box-shadow:0 0 16px ${w.color}"></i></div>`;
+    }
+    case 'hotspot': {
+      const cls = ['w hotspot', hv, w.found ? 'found' : ''].join(' ');
+      return `<div class="${cls}" style="${pos(w)}">${w.found ? '✓' : '?'}</div>`;
+    }
+    case 'row':
+      return `<div class="w row a-${w.accent || 'muted'}${w.priority ? ' prio' : ''}" style="${pos(w)}"></div>`;
+    default:
+      return '';
+  }
+}
+
+function render(p) {
+  const h = p.header || {};
+  const now = new Date();
+  const clock = now.toTimeString().slice(0, 5);
+  let html = `<div class="hdr"><div class="logo">${LOGO}</div><div><div class="ttl">${esc(h.title)}</div><div class="sub">${esc(h.sub)}</div></div>
+    <div class="sp"></div>${h.badge ? `<div class="badge ${h.badgeColor || 'amber'}">${esc(h.badge)}</div>` : ''}<div class="clock">${clock}</div></div>`;
+  let lines = '', body = '';
+  for (const w of p.widgets || []) {
+    if (w.type === 'line') lines += `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${w.color}" stroke-width="10" stroke-linecap="round"/>`;
+    else body += widget(w, p.hover);
+  }
+  html += body;
+  if (lines) html += `<svg class="lines">${lines}</svg>`;  // z-index keeps wires above panels, under terminals
+  if (p.toast) html += `<div class="toast ${p.toast.kind || ''}">${esc(p.toast.text)}</div>`;
+  root.innerHTML = html;
+}
+
+window.addEventListener('message', e => {
+  let d = e.data;
+  if (typeof d === 'string') { try { d = JSON.parse(d); } catch { return; } }
+  if (d && d.widgets) render(d);
+});
+render({ header: { title: 'LS Energy Networks', sub: 'Starting up' }, widgets: [] });
+</script>
+</body>
+</html>

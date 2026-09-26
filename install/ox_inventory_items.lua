@@ -1,0 +1,11 @@
+-- paste into ox_inventory/data/items.lua
+['meter_reader'] = { label = 'Meter Reader', weight = 400, stack = false, close = true, description = 'LSEN handheld for meter reads and job sheets' },
+['multimeter'] = { label = 'Multimeter', weight = 350, stack = false, close = true, description = 'Electrical test meter' },
+['gas_detector'] = { label = 'Gas Detector', weight = 450, stack = false, close = true, description = 'Detects gas leaks (ppm)' },
+['engineer_toolkit'] = { label = 'Engineer Toolkit', weight = 2500, stack = false, close = true, description = 'Insulated tools for meter work' },
+['smart_meter'] = { label = 'Smart Meter', weight = 1800, stack = true, close = true, description = 'LSEN smart meter unit, ready to install' },
+['tamper_seal'] = { label = 'Tamper Seal', weight = 20, stack = true, close = true, description = 'Numbered meter seal' },
+['meter_fuse'] = { label = 'Meter Fuse', weight = 80, stack = true, close = true, description = '100A main fuse' },
+['regulator_valve'] = { label = 'Regulator Valve', weight = 600, stack = true, close = true, description = 'Gas meter regulator' },
+['meter_bypass_kit'] = { label = 'Bypass Kit', weight = 900, stack = true, close = true, description = 'Wire cutters, crocodile clips and bad intentions' },
+['copper_wire'] = { label = 'Copper Wire', weight = 300, stack = true, close = true, description = 'Stripped copper tails. Scrap yards might buy it.' },
